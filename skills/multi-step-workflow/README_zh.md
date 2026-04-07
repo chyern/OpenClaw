@@ -2,7 +2,7 @@
 
 轻量级任务追踪，具备 **“机器门控规划” (Machine-Gated Planning)**、**“自主并行执行” (Autonomous Parallel Execution)** 和 **“用户授权式复盘” (User-Opt-In Review)**。
 
-## 安全与合规说明 (ClawHub Audit v2.9.0)
+## 安全与合规说明 (ClawHub Audit v2.9.1)
 
 > [!IMPORTANT]
 > **为什么使用 `always: true`?**
@@ -36,7 +36,6 @@
 
 - `task-tracker.js`：进度追踪核心。
 - `approve.js`：机器可见的确认标记。
-- `sanitize-pii.js`：代码级隐私屏蔽模块（正则表达式）。
 - `context-snapshot.js`：工作空间状态持久化（支持可选的 `[<last_error_log>]` 参数捕获，并且会在保存前强制自动脱敏）。
 - **依赖说明**：Node.js >= 18。
 

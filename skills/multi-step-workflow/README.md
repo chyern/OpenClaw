@@ -2,7 +2,7 @@
 
 Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel Execution**, and **User-Opt-In Review**.
 
-## Security & Compliance (ClawHub Audit v2.9.0)
+## Security & Compliance (ClawHub Audit v2.9.1)
 
 > [!IMPORTANT]
 > **Why `always: true`?**
@@ -36,7 +36,6 @@ Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel
 
 - `task-tracker.js`: Core progress tracking.
 - `approve.js`: Machine-visible gate signal.
-- `sanitize-pii.js`: Code-level privacy masking module (Regex).
 - `context-snapshot.js`: Workspace state persistence (now supports optional `[<last_error_log>]` capture and enforces auto-sanitization before saving).
 - **Dependencies**: Node.js >= 18.
 
