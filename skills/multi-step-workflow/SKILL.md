@@ -1,13 +1,13 @@
 ---
 name: multi-step-workflow
-version: 2.1.0
+version: 2.1.3
 description: "Standard Operating Procedure for complex tasks. Enforces a structured workflow: Analyze → Confirm → Decompose → Execute → Validate → Review → Complete. Use for any task with more than 3 steps, research, debugging, refactoring, or multi-file changes."
 metadata:
   openclaw:
     always: true
   clawdbot:
     name: multi-step-workflow
-    version: 2.1.0
+    version: 2.1.3
     environment:
       bins:
         - node
@@ -46,6 +46,7 @@ Verify the results match expectations. Run tests, check outputs, confirm with us
 
 ## Phase 6: Review (复盘)
 Briefly summarize: what was done, what was learned, any follow-up items.
+**IMPORTANT:** Write this summary into your workspace memory files (`memory/YYYY-MM-DD.md` or `MEMORY.md`) so the context is preserved across sessions. Do NOT just output it in the chat.
 
 ## Phase 7: Complete (结束)
 Task is done. Clean up if needed.
