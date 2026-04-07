@@ -30,17 +30,14 @@ node scripts/task-tracker.js new "<task>" "<step1|step2|step3|...>"
 ```
 
 ## Phase 4: Execute (执行)
-Work through each step. After completing each one, mark it done:
+Work through steps **one at a time**. For each step:
 
-```bash
-node scripts/task-tracker.js done "<task>" <step_number>
-```
+1. Execute the current step
+2. Mark it done: `node scripts/task-tracker.js done "<task>" <step_number>`
+3. Briefly report what was done
+4. Then proceed to the next step
 
-If context compaction is imminent, save your progress:
-
-```bash
-node scripts/context-snapshot.js save "<task>" "<findings>" "<pending>"
-```
+**Do NOT batch multiple steps together. Complete one, report, then move to the next.**
 
 ## Phase 5: Validate (验收)
 Verify the results match expectations. Run tests, check outputs, confirm with user.
