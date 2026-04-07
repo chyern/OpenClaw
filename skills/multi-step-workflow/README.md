@@ -6,6 +6,19 @@ Lightweight task tracking for AI agents. Break complex tasks into steps, track p
 
 AI agents often lose track of progress on complex tasks — especially when context gets compacted mid-work. This skill gives the agent two simple tools to stay organized.
 
+## Security & ClawHub Notice
+
+> [!IMPORTANT]
+> **Why `always: true`?**
+> This skill provides a Standard Operating Procedure (SOP) for the agent. By setting `always: true`, the agent is always aware that it *should* follow a structured workflow for any complex task. It does not run background processes but remains in the agent's eligible skillset list.
+>
+> **Data Storage & Path Clarity**
+> - **Operational State**: Scripts (e.g., `task-tracker.js`) save technical JSON data to `~/.openclaw/workspace/project/` for internal engine tracking.
+> - **Session Review**: At the end of a task (Phase 6), the agent is instructed to write a human-readable summary into its long-term memory at `memory/YYYY-MM-DD.md` or `MEMORY.md`. This captures lessons, not state.
+>
+> **Scope & Boundaries**
+> The instructions for "reading relevant files" (Phase 1) are strictly limited to the current workspace scope. The agent is responsible for following your system's file access policies.
+
 ## Scripts
 
 | Script | Purpose |
@@ -43,16 +56,11 @@ node scripts/context-snapshot.js clear
 
 ## Storage
 
-All data stored in `~/.openclaw/workspace/project/`. Auto-created on first use.
+Technical state data stored in `~/.openclaw/workspace/project/`. Auto-created on first use.
 
 ## Dependencies
 
 - Node.js >= 18
-
-## Security
-
-- Local filesystem only, no network calls
-- No modifications to user source code unless part of the task
 
 ## License
 
