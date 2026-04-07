@@ -105,6 +105,18 @@ node context-snapshot.js save "<任务>" "<发现>" "<待决事项>"
 
 **无需配置**：脚本会自动创建 `~/.openclaw/workspace/project/` 存储目录。
 
+## 外部终点 (External Endpoints)
+
+无。此技能是自包含的，仅在本地文件系统上操作。
+
+## 安全与隐私 (Security & Privacy)
+
+此技能在 `~/.openclaw/workspace/project/` 中存储状态。它绝不会将用户数据或代码传输到任何外部服务器。
+
+## 信任声明 (Trust Statement)
+
+标准的 OpenClaw 技能工作流管理。除非显式作为任务的一部分（例如重构），否则不会对用户源代码执行破坏性操作。
+
 ## License
 
 MIT

@@ -105,6 +105,18 @@ node context-snapshot.js save "<task>" "<findings>" "<pending>"
 
 **Zero-config**: Scripts automatically create the `~/.openclaw/workspace/project/` storage directory.
 
+## External Endpoints
+
+None. This skill is self-contained and operates on the local filesystem only.
+
+## Security & Privacy
+
+This skill stores state in `~/.openclaw/workspace/project/`. It never transmits user data or code to any external servers.
+
+## Trust Statement
+
+Standard OpenClaw skill workflow management. No destructive actions on user source code unless explicitly part of the task (e.g. refactoring).
+
 ## License
 
 MIT
