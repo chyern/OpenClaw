@@ -1,13 +1,13 @@
 ---
 name: multi-step-workflow
-version: 2.2.0
-description: "Adaptive SOP for any task. Efficiently handles both simple tasks (1-3 steps) and complex engineering tasks via a branching workflow (Analyze → Triage → Standard/Simple Path)."
+version: 2.2.1
+description: "Adaptive SOP for any task. Efficiently handles both simple tasks (less than 3 steps) and complex engineering tasks (3+ steps) via a branching workflow."
 metadata:
   openclaw:
     always: true
   clawdbot:
     name: multi-step-workflow
-    version: 2.2.0
+    version: 2.2.1
     environment:
       bins:
         - node
@@ -19,8 +19,8 @@ When you receive a task, follow this branching workflow to ensure efficiency and
 ## Phase 0: Triage & Analyze (分析与分流)
 1. **Analyze**: Perform a quick analysis of the task scope within the workspace.
 2. **Threshold Check**: Decide on the execution path:
-   - **Simple Path**: If the task is straightforward (e.g., read 1-2 files, explain code, run 1 command) and can be completed in **3 or fewer steps**.
-   - **Standard Path**: If the task involves research, debugging, multi-file refactoring, or **more than 3 steps**.
+   - **Simple Path**: If the task is straightforward (e.g., read 1 file, explain code fragment) and can be completed in **FEWER than 3 steps**.
+   - **Standard Path**: If the task involves research, debugging, multi-file refactoring, or **3 OR MORE steps**.
 
 ---
 
@@ -61,7 +61,7 @@ Verify the results match expectations. Run tests, check outputs, and confirm wit
 
 ### Phase 5: Review (复盘)
 Briefly summarize: what was done, what was learned, and follow-up items.
-**IMPORTANT:** Write this summary into your workspace memory files (`memory/YYYY-MM-DD.md` or `MEMORY.md`) to preserve the lesson across sessions.
+**IMPORTANT:** Write this summary into your workspace memory files (`memory/YYYY-MM-DD.md` or `MEMORY.md`) so the context is preserved across sessions.
 
 ### Phase 6: Complete (结束)
 Task is done. Clean up tracker state if needed.

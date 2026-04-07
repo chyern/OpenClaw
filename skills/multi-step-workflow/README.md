@@ -6,8 +6,8 @@ Lightweight task tracking for AI agents. Break complex tasks into steps, track p
 
 To prevent over-engineering simple tasks, the agent follows a branching logic:
 
-1. **Simple Path (<= 3 steps)**: For straightforward tasks (reading a file, explaining code). The agent proceeds directly without formal tracking.
-2. **Standard Path (> 3 steps)**: For engineering tasks (refactoring, debugging, research). The agent follows the full 7-phase SOP and uses `task-tracker.js`.
+1. **Simple Path (< 3 steps)**: For straightforward tasks (reading a single file, explaining code fragment). The agent proceeds directly without formal tracking.
+2. **Standard Path (>= 3 steps)**: For engineering tasks (refactoring, debugging, research, or anything requiring 3 or more steps). The agent follows the full 7-phase SOP and uses `task-tracker.js`.
 
 ## Why
 
