@@ -19,7 +19,7 @@ Task Input → [State Machine] → Completion
            ┌─────┴─────┐
            │           │
         Scripts      Loop
-        delegate    Advance
+        Advance      Next
         task-tracker Steps
         state-machine
         workflow-status (Unified View)
@@ -35,11 +35,11 @@ Agents are often interrupted mid-task, need to spawn sub-agents, or re-plan half
 
 ### Script Responsibilities
 
-- **delegate.js** — Context information provider. Helps the model decide if a sub-agent is needed.
 - **task-tracker.js** — Step tracking. Automatically triggers state transition suggestions.
 - **state-machine.js** — Lifecycle management.
 - **context-snapshot.js** — Task context snapshot to prevent information loss from context compaction.
-- **workflow-status.js** — Unified view of workflow status and progress.
+- **workflow-status.js** — Unified view and **intelligence provider** (NEXT_ACTION).
+- **set-mode.js** — Toggle between Auto-Pilot and Manual modes.
 
 ### State Machine
 
@@ -69,8 +69,8 @@ IDLE → PLANNING → DELEGATING → EXECUTING → VERIFYING → MEMORYING → D
 #### workflow-status.js (Recommended)
 
 ```bash
-# Get a unified view of all active tasks, states, and detailed progress
-node workflow-status.js
+# Get a unified view/recommendation
+node workflow-status.js [--auto]
 ```
 
 #### task-tracker.js
@@ -79,11 +79,8 @@ node workflow-status.js
 # Create a task with steps
 node task-tracker.js new "<task>" "<step1|step2|step3>"
 
-# Mark step as done (automatically suggests transition if all steps are done)
+# Mark step as done (automatically moves state to VERIFYING if done)
 node task-tracker.js done "<task>" 1
-
-# List all task progress
-node task-tracker.js list
 ```
 
 #### state-machine.js
@@ -92,8 +89,8 @@ node task-tracker.js list
 # Initialize a new task
 node state-machine.js init "<task_id>" "<task_name>"
 
-# Transition state
-node state-machine.js transition "<task_id>" PLANNING EXECUTING
+# Transition state (use next for sequential flow)
+node state-machine.js next "<task_id>"
 ```
 
 #### context-snapshot.js

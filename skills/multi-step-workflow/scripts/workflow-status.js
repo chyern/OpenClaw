@@ -81,6 +81,12 @@ function getStatus(autoMode = false) {
         
         if (nextAction) {
           console.log(`NEXT_ACTION: ${nextAction}`);
+          
+          // Sub-agent recommendation (replacement for delegate.js)
+          if (trackerData.steps.length > 10) {
+            console.log('ADVICE: Large task detected (>10 steps). Consider: Can this be split? Use "spawn <name> <task>" for sub-agents if tasks are independent.');
+          }
+
           if (isAutoPilot) {
             console.log('GUIDE: Mode is Auto-Pilot. Briefly inform user of progress, then IMMEDIATELY PROCEED to next action.');
           } else {

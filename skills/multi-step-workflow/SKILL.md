@@ -1,11 +1,11 @@
 ---
 name: multi-step-workflow
-version: 1.9.0
+version: 1.10.0
 description: "Adaptive autonomous agent workflow engine. Configurable between Auto-Pilot and Manual modes."
 metadata:
   clawdbot:
     name: multi-step-workflow
-    version: 1.9.0
+    version: 1.10.0
     environment:
       bins:
         - node
@@ -20,7 +20,8 @@ metadata:
 > 2. **Follow the GUIDE**: 
 >    - If the output says `GUIDE: Mode is Auto-Pilot...`, then briefly inform the user and **IMMEDIATELY PROCEED**.
 >    - If the output says `GUIDE: Mode is Manual Approval...`, then briefly inform the user and **WAIT for confirmation**.
-> 3. **Execute NEXT_ACTION**: Strictly follow the `NEXT_ACTION` command provided by the script.
+> 3. **Sub-agent Routing (Efficiency)**: If `ADVICE: Large task detected...` appears, or if you identify multiple independent sub-tasks, use the **`spawn`** tool to delegate to a sub-agent.
+> 4. **Execute NEXT_ACTION**: Strictly follow the `NEXT_ACTION` command provided by the script.
 
 ## Configuration (User Control)
 - Users can switch modes using: `node scripts/set-mode.js <auto|manual>`
@@ -62,15 +63,6 @@ IDLE → PLANNING → DELEGATING → EXECUTING → VERIFYING → MEMORYING → D
 
 ## Scripts
 
-### delegate — context info only (model decides)
-
-```bash
-SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
-node "$SKILL_DIR/scripts/delegate.js" <context_pct>
-```
-
-Provides context information only. Model decides on its own: SUBAGENT / MAIN / BLOCK / MAIN_ONLY.
-
 ### context-snapshot — preserve task context before compaction
 
 ```bash
@@ -98,6 +90,15 @@ SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
 node "$SKILL_DIR/scripts/state-machine.js" init "<task_id>" "<task_name>"
 node "$SKILL_DIR/scripts/state-machine.js" get "<task_id>"
 node "$SKILL_DIR/scripts/state-machine.js" transition "<task_id>" "<from_state>" "<to_state>"
+node "$SKILL_DIR/scripts/state-machine.js" next "<task_id>"
 ```
 
-Commands: init, get, transition, list, delete
+Commands: init, get, transition, next, list, delete
+
+### workflow-status — unified dashboard & intelligence
+
+```bash
+SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
+node "$SKILL_DIR/scripts/workflow-status.js" [--auto]
+```
+- Use `--auto` for AI-optimized NEXT_ACTION recommendations.
