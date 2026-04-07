@@ -67,16 +67,23 @@ function cmdDone(name, stepNum) {
 
 function autoTransition(taskName) {
   try {
-    // Attempt to transition state machine from EXECUTING to VERIFYING
-    const scriptDir = dirname(new URL(import.meta.url).pathname);
-    const smPath = join(scriptDir, 'state-machine.js');
-    console.log(`[AUTO] Attempting state transition to VERIFYING...`);
-    // Note: We need a mapping from taskName to taskId in state-machine. 
-    // For now, let's assume one main task or use the same ID if possible.
-    // In many cases, the taskName in tracker is the taskName in state-machine.
-    // We'll search for the taskId in state-machine.
+    const STATE_FILE = resolve(process.env.HOME, '.openclaw/workspace/project/state-machine.json');
+    if (!existsSync(STATE_FILE)) return;
+    
+    const states = JSON.parse(readFileSync(STATE_FILE, 'utf8'));
+    // Find the task in state machine by name
+    const taskEntry = Object.values(states).find(t => t.taskName === taskName);
+    
+    if (taskEntry && taskEntry.state === 'EXECUTING') {
+      console.log(`[AUTO] All steps done. Triggering state machine transition for "${taskName}"...`);
+      // Since we are already in Node, we could import but it's safer/decoupled to use execSync or direct file edit
+      // For simplicity and to avoid circular deps, let's update the state file directly here or call the CLI
+      const cmd = `node "${join(__dirname, 'state-machine.js')}" transition "${taskEntry.taskId}" EXECUTING VERIFYING`;
+      execSync(cmd);
+      console.log(`[AUTO] Transition to VERIFYING complete.`);
+    }
   } catch (e) {
-    // Fail silently if state machine transition fails
+    console.log(`[AUTO-WARN] Auto-transition failed: ${e.message}`);
   }
 }
 

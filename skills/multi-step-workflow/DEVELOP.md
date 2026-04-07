@@ -28,7 +28,7 @@ node "$SKILL_DIR/scripts/context-snapshot.js" save "test" "test" "test"
 node "$SKILL_DIR/scripts/context-snapshot.js" load
 node "$SKILL_DIR/scripts/context-snapshot.js" clear
 node "$SKILL_DIR/scripts/state-machine.js" | head -1
-python3 "$SKILL_DIR/scripts/task-tracker.py" | head -1
+node "$SKILL_DIR/scripts/task-tracker.js" | head -1
 ```
 
 Checklist before publishing:

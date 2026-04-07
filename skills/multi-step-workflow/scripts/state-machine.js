@@ -96,6 +96,26 @@ else if (cmd === 'list') {
     taskId: t.taskId, taskName: t.taskName, state: t.state, updatedAt: t.updatedAt,
   })), null, 2));
 }
+else if (cmd === 'next') {
+  if (!arg1) { console.log('Usage: next <task_id>'); process.exit(1); }
+  const data = load();
+  const t = data[arg1];
+  if (!t) { console.log(JSON.stringify({ok: false, error: 'not found'}, null, 2)); process.exit(1); }
+  
+  const flow = [S.IDLE, S.PLANNING, S.DELEGATING, S.EXECUTING, S.VERIFYING, S.MEMORYING, S.DONE];
+  const idx = flow.indexOf(t.state);
+  if (idx === -1 || idx === flow.length - 1) {
+    console.log(JSON.stringify({ok: false, error: `No next state from ${t.state}`}, null, 2));
+    process.exit(1);
+  }
+  
+  const fromState = t.state;
+  const toState = flow[idx + 1];
+  t.state = toState;
+  t.updatedAt = new Date().toISOString();
+  save(data);
+  console.log(JSON.stringify({ok: true, from: fromState, to: toState, task: t }, null, 2));
+}
 else if (cmd === 'delete') {
   if (!arg1) { console.log('Usage: delete <task_id>'); process.exit(1); }
   const data = load();

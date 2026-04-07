@@ -2,10 +2,12 @@
 
 **Universal agent workflow engine with state machine.** Use for any complex multi-step task: research, debugging, configuration, building, analysis, documentation. Fully self-managing.
 
-## Core Principle: Proactive Logic
+## Core Principle: Auto-Pilot (Autonomous Execution)
 
 > [!IMPORTANT]
-> This skill is not just a toolbox, but the AI's **Standard Operating Procedure (SOP)**. The AI should **proactively** initialize the state machine and task tracking when identifying complex tasks (steps > 3 or deep research/debugging), without waiting for user guidance.
+> This skill operates in **Auto-Pilot Mode**. The AI proactively initializes the workflow and follows an autonomous loop using the **Internal Compass** (`node scripts/workflow-status.js --auto`).
+> - **Async Notifications**: The AI informs you of progress after each step but does not stop.
+> - **Zero Interruption**: The AI only interrupts for critical authorization or if blocked.
 
 ## Architecture
 

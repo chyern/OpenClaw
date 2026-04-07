@@ -1,20 +1,27 @@
 ---
 name: multi-step-workflow
-version: 1.7.1
-description: "Universal agent workflow engine with state machine. Use for any complex multi-step task: research, debugging, configuration, building, analysis, documentation. Fully self-managing."
+version: 1.8.0
+description: "Autonomous agent workflow engine. Proactive, self-managing, and non-blocking."
 metadata:
   clawdbot:
-    emoji: "⚙️"
-    requires:
+    name: multi-step-workflow
+    version: 1.8.0
+    environment:
       bins:
         - node
 ---
-# Agent Workflow
+# Agent Workflow (Auto-Pilot Mode)
 
-## Mandatory Trigger Rules
+## Proactive Internal Compass (SOP)
 
 > [!IMPORTANT]
-> **AI MUST proactively initialize the workflow in the following cases:**
+> **AI MUST follow this autonomous loop for every turn when a task is active:**
+> 1. **Check Status**: Run `node scripts/workflow-status.js --auto` to get the `NEXT_ACTION`.
+> 2. **Notify & Proceed**: Briefly inform the user of the progress (e.g. "Step X done: <what was done>. Moving to step Y..."). 
+> 3. **DO NOT WAIT**: Immediately execute the `NEXT_ACTION` without waiting for user confirmation, unless the state is `BLOCKED`.
+> 4. **Auto-Transition**: Trust the scripts (`task-tracker.js`, `state-machine.js`) to manage state transitions automatically.
+
+## Standard Initialization Logic
 > 1. The task involves more than 3 logical steps.
 > 2. The task falls under "Research, Deep Debugging, or Complex System Configuration".
 > 3. The task involves large-scale modifications across multiple files.
