@@ -1,57 +1,44 @@
-# Multi-Step Workflow (Manager-Worker Edition)
+# Multi-Step Workflow (High-Trust SOP)
 
-Lightweight task tracking for AI agents. This skill enforces a professional **Manager-Worker (Parallel)** architecture for complex engineering tasks.
+Lightweight task tracking with **Machine-Gated Planning** and **Autonomous Parallel Execution**. This skill is designed for complex engineering where alignment and speed are both critical.
+
+## Security & Compliance (ClawHub Audit v2.6.0)
+
+> [!IMPORTANT]
+> **Why `always: true`?**
+> This skill encodes a Standard Operating Procedure (SOP). By setting `always: true`, the agent is constantly aware that for any complex task (>= 3 steps), it *must* follow a structured plan. It is a logic engine, not a background process.
+>
+> **Machine-Enforceable Gate**
+> To address "human-in-the-loop" concerns, the agent is instructed to run `node scripts/approve.js` **ONLY** after you have explicitly approved the Implementation Plan. This provides a machine-verifiable signal that the planning phase has passed.
+>
+> **Sub-agent Isolation**
+> The Manager Agent uses `spawn` (max 3 workers). Sub-agents are instructed to follow strict file-level isolation, focusing only on their assigned modules without modifying global state or tracker progress.
+>
+> **Runtime Requirement**
+> This skill requires **Node.js >= 18**. The `node` binary must be available in the agent's path.
 
 ## Adaptive Workflow Logic
 
-The agent branches based on task complexity to maximize efficiency:
-
-1. **Simple Path (< 3 steps)**: For one-off tasks. The agent proceeds immediately.
+1. **Simple Path (< 3 steps)**: Direct execution. No tracking via scripts.
 2. **Standard Path (>= 3 steps)**:
-   - **Step 1: Planning Mode**: Agent drafts a plan and identifies tasks that can be parallelized. **MUST WAIT for your approval**.
-   - **Step 2: Parallel Execution**: Once approved, the agent acts as a **Manager**. It uses `spawn` to create up to **3 Sub-agents** simultaneously for independent worker tasks, dramatically increasing throughput.
+   - **Step 1: Planning Mode**: Agent drafts a plan. **MUST WAIT for your approval**.
+   - **Step 2: Gating**: Agent runs `node scripts/approve.js` once you say "OK".
+   - **Step 3: Parallel Execution**: The Manager spawns workers and completes the task autonomously.
 
-## Why
+## Scripts & Storage
 
-Single-threaded AI task execution is slow for large projects. This skill solves the bottleneck by enabling **Horizontal Scaling**. For example, when adding tests to 5 modules, the Manager-Worker mode can process multiple modules at once.
+- `task-tracker.js`: Core progress tracking.
+- `approve.js`: **NEW** Machine-visible gate signal.
+- `context-snapshot.js`: Workspace state persistence.
+- **Paths**: Technical JSON stored in `~/.openclaw/workspace/project/`.
+- **Dependencies**: Node.js >= 18.
 
-## Security & ClawHub Notice
+## Standard Usage
 
-> [!IMPORTANT]
-> **Manager Role**
-> Only the main Agent maintains the `task-tracker.js` state. Sub-agents (Workers) are lifecycle-short and do NOT have authorization to modify global state.
->
-> **Concurrency Limit**
-> Standard limit is **3 simultaneous Sub-agents** to prevent API/CPU congestion.
-
-## Scripts
-
-| Script | Purpose |
-|--------|---------|
-| `task-tracker.js` | Break tasks into steps, mark done, see progress |
-| `context-snapshot.js` | Save findings before context compaction |
-
-## Standard Usage (>= 3 steps)
-
-1. **Analysis**: Agent identifies the task as "Standard".
-2. **Planning**: Agent creates steps and identifies parallel workers.
-3. **Approval**: Agent says "I am in Planning Mode" and **STOP**. 
-4. **Execution**: You say "OK". The Manager spawns workers and orchestrates completion.
-
-## Manual Commands (Optional)
-
-```bash
-# See all active tasks and steps
-node scripts/task-tracker.js list
-
-# Mark a specific step as done
-node scripts/task-tracker.js done "task name" 1
-```
-
-## Storage & Dependencies
-
-- **Storage**: `~/.openclaw/workspace/project/`
-- **Deps**: Node.js >= 18
+1. **Analysis**: Agent identifies task complexity.
+2. **Planning**: Agent creates steps and an implementation plan. 
+3. **Approval**: Agent says "In Planning Mode" and **STOPS**. 
+4. **Execution**: You say "OK". Agent runs **approve.js** and starts the autonomous loop.
 
 ## License
 
