@@ -1,10 +1,17 @@
-# Multi-Step Workflow
+# Multi-Step Workflow (Adaptive SOP)
 
-Lightweight task tracking for AI agents. Break complex tasks into steps, track progress, and preserve context across compaction.
+Lightweight task tracking for AI agents. Break complex tasks into steps, track progress, and preserve context across compaction. This skill uses an **Adaptive Workflow** to handle both simple and complex tasks efficiently.
+
+## Adaptive Workflow Logic
+
+To prevent over-engineering simple tasks, the agent follows a branching logic:
+
+1. **Simple Path (<= 3 steps)**: For straightforward tasks (reading a file, explaining code). The agent proceeds directly without formal tracking.
+2. **Standard Path (> 3 steps)**: For engineering tasks (refactoring, debugging, research). The agent follows the full 7-phase SOP and uses `task-tracker.js`.
 
 ## Why
 
-AI agents often lose track of progress on complex tasks — especially when context gets compacted mid-work. This skill gives the agent two simple tools to stay organized.
+AI agents often lose track of progress on complex tasks — especially when context gets compacted mid-work. This skill gives the agent two simple tools to stay organized while remaining agile for small requests.
 
 ## Security & ClawHub Notice
 
@@ -14,10 +21,7 @@ AI agents often lose track of progress on complex tasks — especially when cont
 >
 > **Data Storage & Path Clarity**
 > - **Operational State**: Scripts (e.g., `task-tracker.js`) save technical JSON data to `~/.openclaw/workspace/project/` for internal engine tracking.
-> - **Session Review**: At the end of a task (Phase 6), the agent is instructed to write a human-readable summary into its long-term memory at `memory/YYYY-MM-DD.md` or `MEMORY.md`. This captures lessons, not state.
->
-> **Scope & Boundaries**
-> The instructions for "reading relevant files" (Phase 1) are strictly limited to the current workspace scope. The agent is responsible for following your system's file access policies.
+> - **Session Review**: At the end of a complex task (Standard Path), a human-readable summary is written into `memory/YYYY-MM-DD.md` or `MEMORY.md`. This is skipped for Simple Path tasks.
 
 ## Scripts
 
@@ -28,7 +32,7 @@ AI agents often lose track of progress on complex tasks — especially when cont
 
 ## Usage
 
-### Task Tracker
+### Task Tracker (Standard Path)
 
 ```bash
 # Create a task with steps
@@ -49,9 +53,6 @@ node scripts/context-snapshot.js save "refactor auth" "found 3 patterns" "implem
 
 # Restore after compaction
 node scripts/context-snapshot.js load
-
-# Clean up
-node scripts/context-snapshot.js clear
 ```
 
 ## Storage
