@@ -1,6 +1,6 @@
 ---
 name: multi-step-workflow
-version: 2.8.0
+version: 2.8.1
 description: "Professional SOP with Machine-Gated Planning, Autonomous Loop, Sandboxed Sub-agents, and Code-Level PII Sanitization for ultimate trust."
 metadata:
   openclaw:
@@ -12,7 +12,7 @@ metadata:
       - "~/.openclaw/workspace/project/"
   clawdbot:
     name: multi-step-workflow
-    version: 2.8.0
+    version: 2.8.1
 ---
 # Standard Task SOP (High-Trust Edition)
 
@@ -63,10 +63,12 @@ Summarize your understanding and align on the objective.
 Verify results (tests, results). If a worker fails, go back to Phase 4.
 
 ### Phase 6: Review
-Summarize lessons and outcomes. 
-**PRIVACY (Enforcement in Code):** You MUST sanitize your summary using the provided script before writing it out:
-`node scripts/sanitize-pii.js "<your_summary>"`
-**MEMORY:** Write the resulting sanitized string to `memory/YYYY-MM-DD.md` or `MEMORY.md`.
+Evaluate if there are any significant findings, reusable patterns, or critical lessons worth remembering. 
+- If the task was routine, you may skip memory writing.
+- If there is valuable information:
+  **PRIVACY (Enforcement in Code):** You MUST sanitize your summary using the provided script before writing it out:
+  `node scripts/sanitize-pii.js "<your_summary>"`
+  **MEMORY:** Write the resulting sanitized string to `memory/YYYY-MM-DD.md` or `MEMORY.md`.
 
 ### Phase 7: Complete
 Task finished. Clean up state if necessary.
