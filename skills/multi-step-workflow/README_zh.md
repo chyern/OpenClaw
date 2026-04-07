@@ -2,13 +2,15 @@
 
 轻量级任务追踪，具备 **“机器门控规划” (Machine-Gated Planning)**、**“自主执行” (Autonomous Execution)** 和 **“用户授权式复盘” (User-Opt-In Review)**。
 
-## 安全与合规说明 (ClawHub Audit v3.0.1)
+## 安全与合规说明 (ClawHub Audit v3.1.0)
 
 > [!IMPORTANT]
-> **为什么使用 `always: true`?**
-> 本技能定义了一套标准作业程序 (SOP)。通过设置 `always: true`，可以让 Agent 始终意识到应对复杂任务 (>= 3 步) 时*必须*遵循结构化计划。
-> **如需禁用全局强制策略 (退订)**：请在您的终端运行以下单行命令：
-> `sed -i '' '/always: true/d' ~/.openclaw/workspace/project/SKILL.md` (macOS) 或系统等效命令。
+> **为什么默认 `always: false`? (按需叠加模式)**
+> 为了符合平台的安全审计规范并减少不必要的 Token 消耗，本技能在安装后**不会**强制介入所有会话。Agent 仅在检测到任务复杂度较高或您明确要求时才会启用本 SOP。
+> **如需全局强制开启 (始终执行)**：请运行以下命令，让 Agent 在执行任何任务时都强制遵循本 SOP：
+> `node ~/.openclaw/workspace/project/scripts/config.js set always true`
+> 如需恢复为按需触发模式，请运行：
+> `node ~/.openclaw/workspace/project/scripts/config.js set always false`
 >
 > **机器可强制门控 (Machine-Enforceable Gate)**
 > Agent 被要求在您明确批准实施计划后运行 `node scripts/approve.js`。这在执行日志中留下了明确的“机器标记”，标志着从“规划”正式切换到“执行”。

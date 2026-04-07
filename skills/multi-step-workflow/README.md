@@ -2,13 +2,15 @@
 
 Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Execution**, and **User-Opt-In Review**.
 
-## Security & Compliance (ClawHub Audit v3.0.1)
+## Security & Compliance (ClawHub Audit v3.1.0)
 
 > [!IMPORTANT]
-> **Why `always: true`?**
-> This skill provides a Standard Operating Procedure (SOP). By setting `always: true`, the agent is always aware that it *should* follow a structured workflow for any complex task (>= 3 steps). 
-> **To disable global enforcement (Opt-out)**: Run the following command in your terminal:
-> `sed -i '' '/always: true/d' ~/.openclaw/workspace/project/SKILL.md` (macOS) or use your system equivalent.
+> **Why `always: false`? (Opt-in by Default)**
+> To satisfy platform security audits and minimize token overhead, this skill is **NOT** force-included by default. The agent will only follow this SOP if the task is complex or if you explicitly request it.
+> **To enable global enforcement (Always-On)**: Run the following command to make the agent ALWAYS follow this SOP for every task:
+> `node ~/.openclaw/workspace/project/scripts/config.js set always true`
+> To disable and revert to opt-in mode:
+> `node ~/.openclaw/workspace/project/scripts/config.js set always false`
 >
 > **Machine-Enforceable Gate**
 > The agent is instructed to run `node scripts/approve.js` **ONLY** after you have explicitly approved the Implementation Plan. This provides a machine-verifiable signal that the planning phase has passed.
