@@ -29,7 +29,13 @@ function load(name) {
 }
 
 function save(name, data) {
-  writeFileSync(taskFile(name), JSON.stringify(data, null, 2));
+  const f = taskFile(name);
+  writeFileSync(f, JSON.stringify(data, null, 2));
+  try {
+    chmodSync(f, 0o600);
+  } catch (e) {
+    // Failsafe
+  }
 }
 
 const [cmd, arg1, arg2] = process.argv.slice(2);

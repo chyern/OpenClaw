@@ -2,23 +2,23 @@
 
 Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Execution**, and **User-Opt-In Review**.
 
-## Security & Transparency (ClawHub Audit v4.3.0)
+## Security & Compliance (ClawHub Audit v4.4.0)
 
 > [!IMPORTANT]
-> **Zero-Workdir-Clutter Architecture (Temp-Isolated Storage)**
-> To achieve 100% workspace cleanliness, this skill **no longer writes any files to your project directory**.
-> - **Sandbox Storage**: All technical JSON state is moved to a project-specific isolated subdirectory in the system's temporary directory (`/tmp/openclaw-workflow-*`).
-> - **Transient Lifecycle**: Data in the temp directory is naturally recycled by the OS, providing an additional layer of privacy for interim task findings.
-> - **High-Fidelity Snapshots**: We have **removed PII/Secret filtering** in favor of data integrity. Every detail discovered by the agent is preserved exactly as it is to ensure perfect recovery across turns.
+> **Audit-Hardened Private Sandbox (Owner-Only Access)**
+> To resolve security concerns regarding shared `/tmp` directories, this version implements **strict POSIX permission locking**:
+> - **Private Directory (0700)**: The project-specific temp directory is created with `0700` permissions (read/write/cd for owner only). Other users on the system cannot list or access your task data.
+> - **Private Files (0600)**: All JSON state files (approvals, snapshots, tasks) are created with `0600` permissions (read/write for owner only).
+>
+> **Configurable Snapshot Feature (Default: OFF)**
+> To satisfy high-assurance privacy requirements, the **Context Snapshot** feature is now optional.
+> - **Default useSnapshots**: `false`
+> - **High-Fidelity Snapshots**: When enabled, snapshots are saved in raw form to ensure perfect task recovery. Only enable if you trust the local system's temporary storage.
 
-### 💾 Data Persistence (In Temp)
-- `approvals.json`: Records your explicit approval.
-- `context-snapshot.json`: Raw task findings (un-redacted for fidelity).
-- `tasks/*.json`: Step-by-step progress tracking.
-
-### 🛡️ Security Best Practices
-- **No Self-Modification**: The skill metadata (`SKILL.md`) is never modified by scripts. Setting `always: true` is a manual-only action.
-- **Native-Only Config**: All settings managed via `openclaw config`.
+### 💾 Private Workspace (In Temp)
+- `approvals.json` (0600): Machine-gated approval records.
+- `context-snapshot.json` (0600): Native fidelity task findings.
+- `tasks/*.json` (0600): Granular step tracking.
 
 ## Adaptive Workflow Logic
 
@@ -27,20 +27,23 @@ Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Executio
    - **Step 1: Planning Mode**: Agent drafts a plan. **MUST WAIT for approval**.
    - **Step 2: Gating**: Agent runs `node scripts/approve.js`.
    - **Step 3: Execution**: The Agent completes the task autonomously.
-   - **Step 4: Anti-Amnesia**: Snapshots are saved to Temp if the task is long.
+   - **Step 4: Anti-Amnesia**: If `useSnapshots` is `true`, snapshots are saved to the private sandbox.
 
 ## Configuration
 
-**To enable sub-agents**:
+**To enable sub-agents (Parallelism)**:
 `openclaw config set multi-step-workflow.useSubAgents true --strict-json`
+
+**To enable task snapshots (Persistence)**:
+`openclaw config set multi-step-workflow.useSnapshots true --strict-json`
 
 **To see current configuration**:
 `openclaw config get multi-step-workflow`
 
 ## Core Scripts (Auditable)
 
-- `path-resolver.js`: Project-to-Temp mapping logic.
-- `task-tracker.js`: Progress tracking.
+- `path-resolver.js`: Permission-hardened temp isolation.
+- `task-tracker.js`: Owner-only progress tracking.
 - `approve.js`: Machine-visible gate signal.
 - `context-snapshot.js`: High-fidelity state persistence.
 

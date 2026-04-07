@@ -1,7 +1,7 @@
 ---
 name: multi-step-workflow
-version: 4.3.0
-description: "Professional SOP with Machine-Gated Planning, Native-CLI Config, and Temp-Isolated Sandbox Storage (Zero-Workdir-Clutter)."
+version: 4.4.0
+description: "Professional SOP with Machine-Gated Planning, Native-CLI Config, and Audit-Hardened Private Sandbox Storage."
 metadata:
   openclaw:
     always: false
@@ -10,10 +10,10 @@ metadata:
         - node
         - openclaw
     storage:
-      - "/tmp/openclaw-workflow-*"
+      - "/tmp/openclaw-workflow-* (Mode: 0700)"
   clawdbot:
     name: multi-step-workflow
-    version: 4.3.0
+    version: 4.4.0
 ---
 # Standard Task SOP (High-Trust Edition)
 
@@ -62,9 +62,11 @@ Summarize your understanding and align on the objective.
 >    - If `useSubAgents` is `true`, you may use `spawn` (limit: `maxSubAgents`).
 >    - **RESTRICTION**: Do NOT use `spawn` for arbitrary OS commands or network scanning.
 > 3. **Progress**: Mark steps `done`. Report each step and IMMEDIATELY move to the next.
-> 4. **Context Preservation (Anti-Amnesia)**: If you extract a crucial finding (e.g. an obscure API, a workaround) OR if the task is taking many turns and you suspect context compaction is imminent:
->    `node scripts/context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error_log>"]`
->    *Self-Healing*: If you suddenly forget your plan or loose context mid-loop, run `node scripts/context-snapshot.js load` to recover.
+> 4. **Context Preservation (Anti-Amnesia)**: 
+>    - **Check `useSnapshots`**: Run `openclaw config get multi-step-workflow` (Default: `false`).
+>    - **Execute** (Only if `useSnapshots` is `true`): If you extract a crucial finding OR if the task is taking many turns:
+>      `node scripts/context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error_log>"]`
+>    - **Self-Healing**: If you suspect context compaction, run `node scripts/context-snapshot.js load` to recover.
 
 ### Phase 5: Validate
 Verify results (tests, results). If a worker fails, go back to Phase 4.

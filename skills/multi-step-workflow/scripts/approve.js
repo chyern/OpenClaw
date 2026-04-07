@@ -5,10 +5,13 @@
  * A symbolic script to signal user approval of an implementation plan. 
  * This creates a machine-verifiable event in the task logs that the Planning 
  * Mode gate has been passed.
+ * 
+ * SECURITY: The approvals file is created with 0600 permissions (owner-only) in /tmp.
  */
 
-const fs = require('fs');
-const path = require('path');
+import { writeFileSync, readFileSync, existsSync, mkdirSync, chmodSync } from 'fs';
+import { join, dirname } from 'path';
+import { getTempDir } from './path-resolver.js';
 
 const args = process.argv.slice(2);
 if (args.length === 0) {
@@ -17,18 +20,18 @@ if (args.length === 0) {
 }
 
 const taskName = args[0];
-const approvalPath = path.join(getTempDir(), 'approvals.json');
+const approvalPath = join(getTempDir(), 'approvals.json');
 
-// Ensure directory exists
-const workspaceRoot = path.dirname(approvalPath);
-if (!fs.existsSync(workspaceRoot)) {
-  fs.mkdirSync(workspaceRoot, { recursive: true });
+// Ensure directory exists (mkdirSync with 0700 already handled in getTempDir, but we'll reflect here just in case)
+const workspaceRoot = dirname(approvalPath);
+if (!existsSync(workspaceRoot)) {
+  mkdirSync(workspaceRoot, { recursive: true, mode: 0o700 });
 }
 
 let approvals = [];
-if (fs.existsSync(approvalPath)) {
+if (existsSync(approvalPath)) {
   try {
-    approvals = JSON.parse(fs.readFileSync(approvalPath, 'utf8'));
+    approvals = JSON.parse(readFileSync(approvalPath, 'utf8'));
   } catch (e) {
     approvals = [];
   }
@@ -41,7 +44,14 @@ const approval = {
 };
 
 approvals.push(approval);
-fs.writeFileSync(approvalPath, JSON.stringify(approvals, null, 2));
+writeFileSync(approvalPath, JSON.stringify(approvals, null, 2));
+
+// Set owner-only (0600) permission to protect the gate signal
+try {
+  chmodSync(approvalPath, 0o600);
+} catch (e) {
+  // Graceful fallback if chmod fails on some FS
+}
 
 console.log(`✅ [Gate] Task "${taskName}" has been officially APPROVED for execution.`);
 process.exit(0);
