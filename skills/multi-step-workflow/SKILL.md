@@ -1,104 +1,118 @@
 ---
 name: multi-step-workflow
-version: 1.10.0
-description: "Adaptive autonomous agent workflow engine. Configurable between Auto-Pilot and Manual modes."
+version: 1.11.0
+description: "MUST USE for any complex task, multi-step task, research, deep debugging, refactoring, large-scale code changes, system configuration, migration, or analysis. Tracks progress with a state machine so work survives interruptions. Supports Auto-Pilot and Manual Approval modes."
 metadata:
+  openclaw:
+    always: true
   clawdbot:
     name: multi-step-workflow
-    version: 1.10.0
+    version: 1.11.0
     environment:
       bins:
         - node
 ---
-# Agent Workflow (Adaptive SOP)
+# Agent Workflow — Your Task Operating System
 
-## Proactive Internal Compass
+> **When to use this skill:** Any task that involves more than 3 steps, deep research, debugging, refactoring, multi-file changes, or complex analysis. If in doubt, use it — it's lightweight and recoverable.
+
+## Quick Start (30 seconds)
+
+When you receive a complex task, immediately run these two commands:
+
+```bash
+# 1. Register the task in the state machine
+node scripts/state-machine.js init "<task_id>" "<task_name>"
+
+# 2. Break it into trackable steps
+node scripts/task-tracker.js new "<task_name>" "<step1|step2|step3|...>"
+
+# 3. Advance to PLANNING state
+node scripts/state-machine.js next "<task_id>"
+```
+
+Then, on **every subsequent turn**, run:
+
+```bash
+# Check what to do next
+node scripts/workflow-status.js --auto
+```
+
+The script will tell you exactly what to do via `NEXT_ACTION` and `GUIDE`.
+
+## Autonomous Loop (SOP)
 
 > [!IMPORTANT]
-> **AI MUST follow this autonomous loop for every turn when a task is active:**
+> **Follow this loop for every turn when a task is active:**
 > 1. **Check Status & Mode**: Run `node scripts/workflow-status.js --auto`.
-> 2. **Follow the GUIDE**: 
->    - If the output says `GUIDE: Mode is Auto-Pilot...`, then briefly inform the user and **IMMEDIATELY PROCEED**.
->    - If the output says `GUIDE: Mode is Manual Approval...`, then briefly inform the user and **WAIT for confirmation**.
-> 3. **Sub-agent Routing (Efficiency)**: If `ADVICE: Large task detected...` appears, or if you identify multiple independent sub-tasks, use the **`spawn`** tool to delegate to a sub-agent.
-> 4. **Execute NEXT_ACTION**: Strictly follow the `NEXT_ACTION` command provided by the script.
+> 2. **Follow the GUIDE output**:
+>    - `GUIDE: Mode is Auto-Pilot...` → Briefly inform user, then **IMMEDIATELY PROCEED**.
+>    - `GUIDE: Mode is Manual Approval...` → Briefly inform user, then **WAIT for confirmation**.
+> 3. **Execute NEXT_ACTION**: Do exactly what the script says.
+> 4. **Mark step done**: Run `node scripts/task-tracker.js done "<task_name>" <step_number>`.
+> 5. **Repeat** from step 1.
 
-## Configuration (User Control)
-- Users can switch modes using: `node scripts/set-mode.js <auto|manual>`
-- Default mode is **Auto-Pilot**.
+## User Configuration
 
-## Standard Initialization Logic
-> 1. The task involves more than 3 logical steps.
-> 2. The task falls under "Research, Deep Debugging, or Complex System Configuration".
-> 3. The task involves large-scale modifications across multiple files.
-> 
-> **Standard Initialization Procedure:**
-> - Immediately run `node scripts/state-machine.js init "<task_id>" "<task_name>"`.
-> - Immediately run `node scripts/task-tracker.js new "<task_name>" "<step1|step2|...>"`.
+Users control the execution mode:
+
+```bash
+node scripts/set-mode.js auto     # AI proceeds without asking (Default)
+node scripts/set-mode.js manual   # AI waits for approval at each step
+node scripts/set-mode.js status   # Show current mode
+```
 
 ## State Machine
 
 ```
 IDLE → PLANNING → DELEGATING → EXECUTING → VERIFYING → MEMORYING → DONE
-                            ↓
-                     WAITING_SUBAGENT → EXECUTING
-                            ↓
-                       BLOCKED → EXECUTING (or DONE if cancelled)
 ```
 
-### States
+Branching states: `WAITING_SUBAGENT`, `BLOCKED`, `FAILED`.
 
 | State | Meaning |
 |-------|---------|
 | `IDLE` | No active task |
 | `PLANNING` | Analyzing task, breaking into steps |
-| `DELEGATING` | Running delegate decision |
-| `EXECUTING` | Running steps, loop through |
-| `VERIFYING` | Verifying results match expectations. Fail → retry EXECUTING |
-| `WAITING_SUBAGENT` | Sub-agent running, waiting for result |
-| `MEMORYING` | Writing learned patterns to memory |
+| `DELEGATING` | Routing decided |
+| `EXECUTING` | Running steps |
+| `VERIFYING` | Checking results. Fail → retry EXECUTING |
+| `MEMORYING` | Recording learned patterns |
 | `BLOCKED` | Waiting for user confirmation |
 | `DONE` | Task completed |
-| `FAILED` | Task failed (can retry → PLANNING) |
+| `FAILED` | Can retry → PLANNING |
 
-## Scripts
+## Script Reference
 
-### context-snapshot — preserve task context before compaction
-
-```bash
-SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
-node "$SKILL_DIR/scripts/context-snapshot.js" save "<task>" "<findings>" "<pending>"
-node "$SKILL_DIR/scripts/context-snapshot.js" load
-node "$SKILL_DIR/scripts/context-snapshot.js" clear
-```
-
-Saves task-critical info to external file before OpenClaw auto-compacts context. Survives compaction.
-
-### task-tracker — track steps
+### workflow-status.js (Start here)
 
 ```bash
-SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
-node "$SKILL_DIR/scripts/task-tracker.js" new "<task>" "<step1|step2|step3>"
-node "$SKILL_DIR/scripts/task-tracker.js" done "<task>" 1
-node "$SKILL_DIR/scripts/task-tracker.js" list
+node scripts/workflow-status.js          # Human-readable dashboard
+node scripts/workflow-status.js --auto   # AI-optimized: returns NEXT_ACTION + GUIDE
 ```
 
-### state-machine — workflow state manager
+### state-machine.js
 
 ```bash
-SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
-node "$SKILL_DIR/scripts/state-machine.js" init "<task_id>" "<task_name>"
-node "$SKILL_DIR/scripts/state-machine.js" get "<task_id>"
-node "$SKILL_DIR/scripts/state-machine.js" transition "<task_id>" "<from_state>" "<to_state>"
-node "$SKILL_DIR/scripts/state-machine.js" next "<task_id>"
+node scripts/state-machine.js init "<id>" "<name>"        # Create task
+node scripts/state-machine.js next "<id>"                  # Advance to next state
+node scripts/state-machine.js get "<id>"                   # Check current state
+node scripts/state-machine.js transition "<id>" "<from>" "<to>"  # Manual transition
+node scripts/state-machine.js list                         # List all tasks
 ```
 
-Commands: init, get, transition, next, list, delete
-
-### workflow-status — unified dashboard & intelligence
+### task-tracker.js
 
 ```bash
-SKILL_DIR="$(npm root -g)/openclaw/skills/multi-step-workflow"
-node "$SKILL_DIR/scripts/workflow-status.js" [--auto]
+node scripts/task-tracker.js new "<name>" "<s1|s2|s3>"     # Create steps
+node scripts/task-tracker.js done "<name>" <step_number>   # Mark step done
+node scripts/task-tracker.js list                          # Show all tasks
 ```
-- Use `--auto` for AI-optimized NEXT_ACTION recommendations.
+
+### context-snapshot.js
+
+```bash
+node scripts/context-snapshot.js save "<task>" "<findings>" "<pending>"  # Save before compaction
+node scripts/context-snapshot.js load                                    # Restore after compaction
+node scripts/context-snapshot.js clear                                   # Clean up
+```
