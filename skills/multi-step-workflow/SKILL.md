@@ -1,7 +1,7 @@
 ---
 name: multi-step-workflow
-version: 2.6.1
-description: "Professional SOP with Machine-Gated Planning Mode, Autonomous Loop & Sandboxed Sub-agents. Optimized for high-trust environments."
+version: 2.7.0
+description: "Professional SOP with Machine-Gated Planning, Autonomous Loop, Sandboxed Sub-agents, and Context Preservation for long-running resilience."
 metadata:
   openclaw:
     always: true
@@ -12,7 +12,7 @@ metadata:
       - "~/.openclaw/workspace/project/"
   clawdbot:
     name: multi-step-workflow
-    version: 2.6.1
+    version: 2.7.0
 ---
 # Standard Task SOP (High-Trust Edition)
 
@@ -55,6 +55,9 @@ Summarize your understanding and align on the objective.
 > 1. **Manager Role**: Orchestrate execution using the approved plan.
 > 2. **Worker Role (Sub-agents)**: Use `spawn` for independent tasks (max 3). **ISOLATION**: Ensure sub-agents are restricted to their assigned files.
 > 3. **Progress**: Mark steps `done`. Report each step and IMMEDIATELY move to the next.
+> 4. **Context Preservation (Anti-Amnesia)**: If you extract a crucial finding (e.g. an obscure API, a workaround) OR if the task is taking many turns and you suspect context compaction is imminent:
+>    `node scripts/context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error_log>"]`
+>    *Self-Healing*: If you suddenly forget your plan or loose context mid-loop, run `node scripts/context-snapshot.js load` to recover.
 
 ### Phase 5: Validate
 Verify results (tests, results). If a worker fails, go back to Phase 4.

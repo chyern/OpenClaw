@@ -7,7 +7,7 @@
  * information to a file that survives compaction.
  * 
  * Usage:
- *   node context-snapshot.js save "<task>" "<findings>" "<pending>"
+ *   node context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error>"]
  *   node context-snapshot.js load
  *   node context-snapshot.js clear
  */
@@ -28,17 +28,18 @@ function save(data) {
   writeFileSync(SNAPSHOT_FILE, JSON.stringify(data, null, 2));
 }
 
-const [cmd, arg1, arg2, arg3] = process.argv.slice(2);
+const [cmd, arg1, arg2, arg3, arg4] = process.argv.slice(2);
 
 if (cmd === 'save') {
   if (!arg1) {
-    console.log(JSON.stringify({ error: 'Usage: context-snapshot.js save "<task>" "<findings>" "<pending>"' }));
+    console.log(JSON.stringify({ error: 'Usage: context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error>"]' }));
     process.exit(1);
   }
   const snapshot = {
     task: arg1,
     findings: arg2 || '',
     pending: arg3 || '',
+    lastError: arg4 || '',
     savedAt: new Date().toISOString(),
     contextAtSave: null, // model fills this in if known
   };
@@ -69,7 +70,7 @@ else if (cmd === 'clear') {
 
 else {
   console.log('Usage:');
-  console.log('  context-snapshot.js save "<task>" "<findings>" "<pending>"');
+  console.log('  context-snapshot.js save "<task>" "<findings>" "<pending>" ["<last_error>"]');
   console.log('  context-snapshot.js load');
   console.log('  context-snapshot.js clear');
 }

@@ -1,8 +1,8 @@
 # Multi-Step Workflow (High-Trust SOP)
 
-Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel Execution**, and **Privacy-Aware Reviews**.
+Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel Execution**, and **Anti-Amnesia Context Preservation**.
 
-## Security & Compliance (ClawHub Audit v2.6.1)
+## Security & Compliance (ClawHub Audit v2.7.0)
 
 > [!IMPORTANT]
 > **Why `always: true`?**
@@ -26,12 +26,13 @@ Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel
    - **Step 1: Planning Mode**: Agent drafts a plan. **MUST WAIT for approval**.
    - **Step 2: Gating**: Agent runs `node scripts/approve.js` once you say "OK".
    - **Step 3: Parallel Execution**: The Manager spawns workers and completes the task autonomously.
+   - **Step 4: Anti-Amnesia**: If the task runs long, the agent proactively saves snapshots (`context-snapshot.js`) to survive context compaction.
 
 ## Scripts & Storage
 
 - `task-tracker.js`: Core progress tracking.
 - `approve.js`: Machine-visible gate signal.
-- `context-snapshot.js`: Workspace state persistence.
+- `context-snapshot.js`: Workspace state persistence (now supports optional `[<last_error_log>]` capture).
 - **Dependencies**: Node.js >= 18.
 
 ## Standard Usage
@@ -40,6 +41,7 @@ Lightweight task tracking with **Machine-Gated Planning**, **Autonomous Parallel
 2. **Planning**: Agent creates steps and an implementation plan. 
 3. **Approval**: Agent says "In Planning Mode" and **STOPS**. 
 4. **Execution**: You say "OK". Agent runs **approve.js** and starts the autonomous loop.
+5. **Recovery**: If the agent forgets instructions mid-task due to session limits, it will auto-load its snapshot.
 
 ## License
 

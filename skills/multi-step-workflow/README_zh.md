@@ -1,8 +1,8 @@
 # 多步骤工作流 (高信任版 SOP)
 
-轻量级任务追踪，具备 **“机器门控规划” (Machine-Gated Planning)**、**“自主并行执行” (Autonomous Parallel Execution)** 和 **“隐私保护复盘” (Privacy-Aware Review)**。
+轻量级任务追踪，具备 **“机器门控规划” (Machine-Gated Planning)**、**“自主并行执行” (Autonomous Parallel Execution)** 和 **“防遗忘上下文保护” (Anti-Amnesia Context Preservation)**。
 
-## 安全与合规说明 (ClawHub Audit v2.6.1)
+## 安全与合规说明 (ClawHub Audit v2.7.0)
 
 > [!IMPORTANT]
 > **为什么使用 `always: true`?**
@@ -26,12 +26,13 @@
    - **第一步：规划模式**：Agent 拟定计划。**必须停止以等待您的批准**。
    - **第二步：门控跳转**：一旦您说“OK”，Agent 运行 `node scripts/approve.js` 以标记进入执行阶段。
    - **第三步：自主并行执行**：管理者调度工人并行完成任务。
+   - **第四步：防遗忘机制**：对于耗时极长的任务，Agent 会主动捕获带有报错信息的快照 (`context-snapshot.js`)，以抵抗底层平台的会话压缩。
 
 ## 脚本与存储说明
 
 - `task-tracker.js`：进度追踪核心。
 - `approve.js`：机器可见的确认标记。
-- `context-snapshot.js`：工作空间状态持久化。
+- `context-snapshot.js`：工作空间状态持久化（现已支持可选的 `[<last_error_log>]` 参数捕获）。
 - **依赖说明**：Node.js >= 18。
 
 ## 标准用法
@@ -40,6 +41,7 @@
 2. **规划**：Agent 创建步骤和实施计划。
 3. **审批**：Agent 进入“规划模式”并**停止 (STOP)**。
 4. **执行**：一旦您说“OK”，Agent 运行 **approve.js** 后开启自主循环。
+5. **恢复**：如果 Agent 在执行中途因为底层会话截断而突然“失忆”，它会自主读取快照恢复认知。
 
 ## 许可证
 
