@@ -1,9 +1,10 @@
 ---
 name: multi-step-workflow
+version: 1.7.0
 description: "Universal agent workflow engine with state machine. Use for any complex multi-step task: research, debugging, configuration, building, analysis, documentation. Fully self-managing."
 metadata:
   {
-    "openclaw": {
+    "clawdbot": {
       "emoji": "⚙️",
       "requires": { "bins": ["node"] },
     },
